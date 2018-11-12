@@ -1,0 +1,185 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "logicAppName": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 80,
+      "metadata": {
+        "description": "Name of the Logic App."
+      }
+    },
+    "logicAppLocation": {
+      "type": "string",
+      "defaultValue": "[resourceGroup().location]",
+      "allowedValues": [
+        "[resourceGroup().location]",
+        "australiaeast",
+        "australiasoutheast",
+        "brazilsouth",
+        "centralus",
+        "eastasia",
+        "eastus",
+        "eastus2",
+        "japaneast",
+        "japanwest",
+        "northcentralus",
+        "northeurope",
+        "southcentralus",
+        "southeastasia",
+        "westeurope",
+        "westus"
+      ],
+      "metadata": {
+        "description": "Location of the Logic App."
+      }
+    },
+    "shusqlserverAdminLogin": {
+      "type": "string",
+      "minLength": 1
+    },
+    "appInsightsLocation": {
+      "type": "string",
+      "defaultValue": "[resourceGroup().location]",
+      "allowedValues": [
+        "[resourceGroup().location]",
+        "australiaeast",
+        "australiasoutheast",
+        "brazilsouth",
+        "centralus",
+        "eastasia",
+        "eastus",
+        "eastus2",
+        "japaneast",
+        "japanwest",
+        "northcentralus",
+        "northeurope",
+        "southcentralus",
+        "southeastasia",
+        "westeurope",
+        "westus"
+      ],
+      "metadata": {
+        "description": "Location of the app insight."
+      }
+    },
+
+    "shusqlserverAdminLoginPassword": {
+      "type": "securestring"
+    },
+    "opdg_name": {
+      "type": "string",
+      "metadata": {
+        "description": "Name of the Queue"
+      }
+    },
+    "opdg_onprem_id": {
+      "type": "string",
+      "metadata": {
+        "description": "Name of the Queue"
+      }
+    }
+
+  },
+  "variables": {
+    "shusqlserverName": "[concat('shusqlserver', uniqueString(resourceGroup().id))]",
+    "serviceTemplateFolder": "nestedtemplates",
+    "serviceTemplateFileName": "service.json",
+    "serviceTemplateParametersFileName": "service.parameters.json",
+    "appInsightsName": "testinsight",
+    "templatelink": "[concat('https://bitbucket.org/DemoForSHU/azureshu/src/master/AzureResourceGroupSHU/nestedtemplates/','service.json')]",
+    "paramlink": "[concat('https://bitbucket.org/DemoForSHU/azureshu/src/master/AzureResourceGroupSHU/nestedtemplates/','service.parameters.json')]"
+  },
+  "resources": [
+
+    {
+      "name": "[parameters('logicAppName')]",
+      "type": "Microsoft.Logic/workflows",
+      "location": "[parameters('logicAppLocation')]",
+      "tags": {
+        "displayName": "LogicApp"
+      },
+      "apiVersion": "2016-06-01",
+      "properties": {
+        "definition": {
+          "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+          "contentVersion": "1.0.0.0",
+          "actions": {},
+          "outputs": {},
+          "parameters": {},
+          "triggers": {}
+        },
+        "parameters": {}
+      }
+    },
+    {
+      "name": "[variables('shusqlserverName')]",
+      "type": "Microsoft.Sql/servers",
+      "location": "[resourceGroup().location]",
+      "apiVersion": "2014-04-01-preview",
+      "dependsOn": [],
+      "tags": {
+        "displayName": "shusqlserver"
+      },
+      "properties": {
+        "administratorLogin": "[parameters('shusqlserverAdminLogin')]",
+        "administratorLoginPassword": "[parameters('shusqlserverAdminLoginPassword')]"
+      },
+      "resources": [
+        {
+          "name": "AllowAllWindowsAzureIps",
+          "type": "firewallrules",
+          "location": "[resourceGroup().location]",
+          "apiVersion": "2014-04-01-preview",
+          "dependsOn": [
+            "[resourceId('Microsoft.Sql/servers', variables('shusqlserverName'))]"
+          ],
+          "properties": {
+            "startIpAddress": "0.0.0.0",
+            "endIpAddress": "0.0.0.0"
+          }
+        }
+      ]
+    },
+   /* {
+      "type": "microsoft.insights/components",
+      "kind": "other",
+      "name": "[variables('appInsightsServiceName')]",
+      "apiVersion": "2015-05-01",
+      "location": "[parameters('appInsightsLocation')]",
+      "tags": {},
+      "scale": null,
+      "properties": {
+        "ApplicationId": "[variables('appInsightsServiceName')]"
+      },
+      "dependsOn": []
+    },*/
+    {
+      "type": "Microsoft.Web/connectionGateways",
+      "name": "[parameters('opdg_name')]",
+      "apiVersion": "2016-06-01",
+      "location": "northeurope",
+      "scale": null,
+      "properties": {
+        "connectionGatewayInstallation": {
+          "id": "[parameters('opdg_onprem_id')]"
+        }
+      },
+      "dependsOn": []
+    },
+    {
+      "type": "microsoft.insights/components",
+      "kind": "web",
+      "name": "[variables('appInsightsName')]",
+      "apiVersion": "2014-04-01",
+      "location": "[resourceGroup().location]",
+      "properties": {
+        "ApplicationId": "[variables('appInsightsName')]"
+      },
+      "dependsOn": []
+    }
+  ],
+  "outputs": {}
+}
+

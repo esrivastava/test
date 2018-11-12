@@ -1,0 +1,35 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "gatewayApiVersion": {
+      "type": "String",
+      "minLength": 1
+    },
+    "gatewayName": {
+      "type": "String",
+      "minLength": 1
+    },
+    "gatewayLocation": {
+      "type": "String",
+      "minLength": 1
+    },
+    "gatewayInstallationId": {
+      "type": "String",
+      "minLength": 1
+    }
+  },
+  "resources": [
+    {
+      "type": "Microsoft.Web/connectionGateways",
+      "name": "[parameters('gatewayName')]",
+      "apiVersion": "[parameters('gatewayApiVersion')]",
+      "location": "[parameters('gatewayLocation')]",
+      "properties": {
+        "connectionGatewayInstallation": {
+          "Id": "[parameters('gatewayInstallationId')]"
+        }
+      }
+    }
+  ]
+}

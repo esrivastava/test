@@ -1,0 +1,27 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "logicAppName": {
+      "value": "SHULogicAppdemo"
+    },
+    "shusqlserverAdminLogin": {
+      "value": "solidsoftreply"
+    },
+    "shusqlserverAdminLoginPassword": {
+      "value": "Sai\"baba10"
+    },
+    "logicAppLocation": {
+      "value": "eastus"
+    },
+    "appInsightsLocation": { "value": "eastus" },
+    "opdg_name": {
+      "value": "testopdg"
+    },
+    "opdg_onprem_id": {
+      "value": "/subscriptions/7b9338d2-e8dc-405b-91d7-ef8fe30b97b6/providers/Microsoft.Web/locations/northeurope/connectionGatewayInstallations/d9dfa058-164c-4637-bfa3-8318930cad57"
+    }
+
+  }
+
+}

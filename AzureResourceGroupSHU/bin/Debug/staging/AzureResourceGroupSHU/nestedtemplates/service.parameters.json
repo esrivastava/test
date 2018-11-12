@@ -1,0 +1,18 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "gatewayApiVersion": {
+      "value": "2016-06-01"
+    },
+    "gatewayName": {
+      "value": "shugateway"
+    },
+    "gatewayLocation": {
+      "value": "eastus"
+    },
+    "gatewayInstallationId": {
+      "value": "/subscriptions/7b9338d2-e8dc-405b-91d7-ef8fe30b97b6/providers/Microsoft.Web/locations/eastus/connectionGatewayInstallations/1f06498a-abe1-45bd-880f-a0d9b3c31f53"
+    }
+  }
+}
